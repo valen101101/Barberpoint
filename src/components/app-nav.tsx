@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Scissors, Users, Tag, ChartColumn } from "lucide-react";
+import { Scissors, Users, Tag, ChartColumn, KeyRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -12,16 +12,22 @@ const NAV_ITEMS = [
   { href: "/analisis", label: "Análisis", icon: ChartColumn },
 ] as const;
 
+function navItems(canManageUsers: boolean) {
+  return canManageUsers
+    ? [...NAV_ITEMS, { href: "/usuarios", label: "Usuarios", icon: KeyRound }]
+    : NAV_ITEMS;
+}
+
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function SidebarNav() {
+export function SidebarNav({ canManageUsers = false }: { canManageUsers?: boolean }) {
   const pathname = usePathname();
 
   return (
     <nav className="flex flex-col gap-1">
-      {NAV_ITEMS.map((item) => {
+      {navItems(canManageUsers).map((item) => {
         const active = isActive(pathname, item.href);
         return (
           <Link
@@ -48,12 +54,12 @@ export function SidebarNav() {
   );
 }
 
-export function MobileTabBar() {
+export function MobileTabBar({ canManageUsers = false }: { canManageUsers?: boolean }) {
   const pathname = usePathname();
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-sidebar-border bg-sidebar pb-[env(safe-area-inset-bottom)] md:hidden">
-      {NAV_ITEMS.map((item) => {
+      {navItems(canManageUsers).map((item) => {
         const active = isActive(pathname, item.href);
         return (
           <Link

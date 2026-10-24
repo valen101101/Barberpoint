@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { MobileTabBar, SidebarNav } from "@/components/app-nav";
 import { signOut } from "@/app/login/actions";
 import { getCurrentBarber } from "@/features/barbers/queries";
+import { canResetPasswords } from "@/features/barbers/permissions";
 
 export default async function AppLayout({ children }: LayoutProps<"/">) {
   const barber = await getCurrentBarber();
@@ -32,7 +33,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
           </p>
         </div>
         <div className="flex-1 px-3">
-          <SidebarNav />
+          <SidebarNav canManageUsers={canResetPasswords(barber)} />
         </div>
         <div className="border-t border-sidebar-border p-3">
           <form action={signOut}>
@@ -78,7 +79,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
 
-        <MobileTabBar />
+        <MobileTabBar canManageUsers={canResetPasswords(barber)} />
       </div>
     </div>
   );
